@@ -2,7 +2,7 @@
 	path = oak_detector/thirdparty/depthai-core
 	url = https://github.com/luxonis/depthai-core.git
 [submodule "taco_dataset"]
-	path = taco_dataset
+	path = obj_det_model/taco_dataset/taco_dataset
 	url = https://github.com/pedropro/TACO.git
 [submodule "obj_det_model/CutLER"]
 	path = obj_det_model/CutLER
