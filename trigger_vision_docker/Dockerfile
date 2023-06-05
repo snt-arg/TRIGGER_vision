@@ -202,26 +202,11 @@ ENV PATH=${CONDA_ROOT}/bin:${PATH}
 
 RUN pip install -U colcon-common-extensions
 
-RUN conda init bash && conda update conda && conda install -c conda-forge conda-bash-completion && conda create --name ros -c conda-forge python=3.11
+RUN conda init bash && conda update conda && conda install -c conda-forge conda-bash-completion && conda create --name ros -c conda-forge python=3.10
 
 RUN conda config --set auto_activate_base false
 
-RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
-    conda activate ros &&\
-    pip install Cython numpy scipy \
-    matplotlib tqdm pillow \
-    pandas pyyaml opencv-python autopep8
-
-WORKDIR ${HOME}
-
-RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
-    conda activate ros &&\ wget -qO- https://docs.luxonis.com/install_dependencies.sh | bash && \
-    python3 -m pip install --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai && \
-    git clone https://github.com/luxonis/depthai.git && \
-    cd depthai/ && \
-    python3 install_requirements.py
 RUN echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' | sudo tee /etc/udev/rules.d/80-movidius.rules
-
 
 RUN printf "if [[ -r $CONDA_ROOT/etc/profile.d/bash_completion.sh ]]; then\n\
     source $CONDA_ROOT/etc/profile.d/bash_completion.sh\n\
@@ -231,9 +216,44 @@ fi\n" >> ~/.bashrc
 
 RUN printf "conda activate ros" >> ~/.bashrc
 
-RUN RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+WORKDIR ${HOME}
+
+RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+    conda activate ros &&\
+    pip install Cython numpy scipy \
+    matplotlib tqdm pillow \
+    pandas pyyaml opencv-python autopep8
+
+RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+    conda activate ros &&\ wget -qO- https://docs.luxonis.com/install_dependencies.sh | bash && \
+    python3 -m pip install --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai && \
+    git clone https://github.com/luxonis/depthai.git && \
+    cd depthai/ && \
+    python3 install_requirements.py
+
+RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
     conda activate ros && \
-    conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia
+    pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+    conda activate ros && \
+    wget https://raw.githubusercontent.com/pedropro/TACO/master/requirements.txt && \
+    pip3 install -r requirements.txt && \
+    rm requirements.txt
+
+WORKDIR $HOME
+
+RUN git clone https://github.com/facebookresearch/detectron2.git &&\
+    cd detectron2 && \
+    source $HOME/miniconda3/etc/profile.d/conda.sh && \
+    conda activate ros && \
+    pip3 install -e . && \
+    pip3 install git+https://github.com/cocodataset/panopticapi.git && \
+    pip3 install git+https://github.com/mcordts/cityscapesScripts.git && \
+    wget https://raw.githubusercontent.com/facebookresearch/CutLER/main/requirements.txt && \
+    pip3 install -r requirements.txt && \
+    rm requirements.txt
+
 
 # RUN RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
 #     conda activate ros && \
