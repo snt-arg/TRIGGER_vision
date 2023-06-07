@@ -1,0 +1,7 @@
+ultralytics
+comet_ml
+onnx
+onnxsim
+openvino-dev
+albumentations
+pycocotools

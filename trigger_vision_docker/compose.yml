@@ -12,7 +12,7 @@ services:
       - '/dev/dri/renderD128:/dev/dri/renderD128'
       - '/dev/dxg:/dev/dxg'
     volumes:
-      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /mnt/wslg/.X11-unix:/tmp/.X11-unix
       - /tmp/.docker.xauth:/tmp/.docker.xauth
       - /mnt/wslg:/mnt/wslg
       - /usr/lib/wsl:/usr/lib/wsl

@@ -214,51 +214,50 @@ else\n\
     echo 'WARNING: could not find conda-bash-completion setup script'\n\
 fi\n" >> ~/.bashrc
 
-RUN printf "conda activate ros" >> ~/.bashrc
 
 WORKDIR ${HOME}
 
 RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
-    conda activate ros &&\
-    pip install Cython numpy scipy \
-    matplotlib tqdm pillow \
-    pandas pyyaml opencv-python autopep8
+    conda activate ros && \
+    pip install Cython numpy scipy jupyter pandas scikit-learn \
+    matplotlib seaborn pillow scikit-image \
+    pyyaml autopep8 thop psutil tqdm
 
 RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
-    conda activate ros &&\ wget -qO- https://docs.luxonis.com/install_dependencies.sh | bash && \
-    python3 -m pip install --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai && \
-    git clone https://github.com/luxonis/depthai.git && \
-    cd depthai/ && \
-    python3 install_requirements.py
+    conda activate ros && \
+    pip install ultralytics clearml comet_ml onnx onnxsim openvino-dev albumentations pycocotools roboflow
+
+RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+    conda activate ros && \
+    pip3 uninstall -y opencv-python opencv-python-headless opencv-contrib-python opencv-contrib-python-headless && \
+    pip3 install -U opencv-contrib-python
 
 RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
     conda activate ros && \
     pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
-RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
-    conda activate ros && \
-    wget https://raw.githubusercontent.com/pedropro/TACO/master/requirements.txt && \
-    pip3 install -r requirements.txt && \
-    rm requirements.txt
-
-WORKDIR $HOME
-
-RUN git clone https://github.com/facebookresearch/detectron2.git &&\
-    cd detectron2 && \
-    source $HOME/miniconda3/etc/profile.d/conda.sh && \
-    conda activate ros && \
-    pip3 install -e . && \
-    pip3 install git+https://github.com/cocodataset/panopticapi.git && \
-    pip3 install git+https://github.com/mcordts/cityscapesScripts.git && \
-    wget https://raw.githubusercontent.com/facebookresearch/CutLER/main/requirements.txt && \
-    pip3 install -r requirements.txt && \
-    rm requirements.txt
-
-
-# RUN RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+# RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
 #     conda activate ros && \
-#     pip install transformers timm
+#     pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118  opencv-python
 
-# RUN RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+
+# RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+#     conda activate ros &&\ wget -qO- https://docs.luxonis.com/install_dependencies.sh | bash && \
+#     python3 -m pip install --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai && \
+#     git clone https://github.com/luxonis/depthai.git && \
+#     cd depthai/ && \
+#     python3 install_requirements.py
+
+# RUN git clone https://github.com/facebookresearch/detectron2.git &&\
+#     cd detectron2 && \
+#     source $HOME/miniconda3/etc/profile.d/conda.sh && \
 #     conda activate ros && \
-#     pip install scikit-image tqdm pycocotools git+https://github.com/lucasb-eyer/pydensecrf.git
+#     pip3 install -e . && \
+#     pip3 install git+https://github.com/cocodataset/panopticapi.git && \
+#     pip3 install git+https://github.com/mcordts/cityscapesScripts.git && \
+#     wget https://raw.githubusercontent.com/facebookresearch/CutLER/main/requirements.txt && \
+#     pip3 install -r requirements.txt && \
+#     rm requirements.txt && \
+#     pip install git+https://github.com/lucasb-eyer/pydensecrf.git
+
+# RUN printf "conda activate ros" >> ~/.bashrc

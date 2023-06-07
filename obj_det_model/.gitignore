@@ -1,0 +1,8 @@
+*.y[a]ml
+*.pt
+*.jp[e]g
+*.png
+.comet.config
+datasets/
+runs/
+bottle_segmentation/
