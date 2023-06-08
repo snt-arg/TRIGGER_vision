@@ -236,17 +236,16 @@ RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
     conda activate ros && \
     pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 
-# RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
-#     conda activate ros && \
-#     pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118  opencv-python
+RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+    conda activate ros &&\ wget -qO- https://docs.luxonis.com/install_dependencies.sh | bash && \
+    python3 -m pip install --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai && \
+    git clone https://github.com/luxonis/depthai.git && \
+    cd depthai/ && \
+    python3 install_requirements.py
 
-
-# RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
-#     conda activate ros &&\ wget -qO- https://docs.luxonis.com/install_dependencies.sh | bash && \
-#     python3 -m pip install --extra-index-url https://artifacts.luxonis.com/artifactory/luxonis-python-snapshot-local/ depthai && \
-#     git clone https://github.com/luxonis/depthai.git && \
-#     cd depthai/ && \
-#     python3 install_requirements.py
+RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
+    conda activate ros &&\
+    pip install onnx-simplifier onnxruntime-gpu
 
 # RUN git clone https://github.com/facebookresearch/detectron2.git &&\
 #     cd detectron2 && \
@@ -261,3 +260,8 @@ RUN source $HOME/miniconda3/etc/profile.d/conda.sh && \
 #     pip install git+https://github.com/lucasb-eyer/pydensecrf.git
 
 # RUN printf "conda activate ros" >> ~/.bashrc
+ENV LIBVA_DRIVER_NAME=d3d12
+ENV LD_LIBRARY_PATH ${LD_LIBRARY_PATH:+${LD_LIBRARY_PATH}:}/usr/lib/wsl/lib
+# https://github.com/microsoft/wslg/wiki/GPU-selection-in-WSLg
+ENV MESA_D3D12_DEFAULT_ADAPTER_NAME=intel
+ENV LIBGL_ALWAYS_SOFTWARE=0
