@@ -10,6 +10,7 @@ parser.add_argument('--workers', type=int, default=4, help="Num workers (cpu thr
 parser.add_argument('--batch_size', type=int, default=32, help="Batch size")
 parser.add_argument('--lr0', type=float, default=1e-3, help="Init learning rate")
 parser.add_argument('--device', type=int, default=0, help="ID CUDA device")
+parser.add_argument('--api_key', type=str, default=argparse.SUPPRESS, help="COMETML API Key (personal use)")
 
 args = parser.parse_args()
 
@@ -17,12 +18,18 @@ net_size = args.net_size
 input_size = args.input_size
 
 model_name = f'yolov8{net_size}-seg'
-experiment = Experiment(
-  api_key = "mfVQXEQ0maXqHp4pVrDZyxzS9",
-  project_name = f"{model_name}_{input_size}_segm_trash",
-  workspace="claudiocimarelli",
-  auto_output_logging='default',
-)
+experiment = None
+if hasattr(args, 'imgsz'):
+  try:
+    experiment = Experiment(
+      api_key = args.api_key,
+      project_name = f"{model_name}_{input_size}_segm_trash",
+      workspace="claudiocimarelli",
+      auto_output_logging='default',
+    )
+  except Exception as e:
+    print(e)
+    print ('Comet experiment disabled')
 
 # Report multiple hyperparameters using a dictionary:
 hyper_params = {
@@ -81,7 +88,9 @@ hyper_params = {
     # "mixup: 0.0 # image mixup (probability)
     # "copy_paste: 0.0 # segment copy-paste (probability)
 }
-experiment.log_parameters(hyper_params)
+
+if experiment is not None:
+  experiment.log_parameters(hyper_params)
 
 # Load a model
 model = YOLO(f'{model_name}.pt')  # load a pretrained model
