@@ -18,7 +18,7 @@ services:
       - /usr/lib/wsl:/usr/lib/wsl
       - ${HOME}/.ssh:/home/sntarg/.ssh
       - ..:/home/sntarg/ros_ws/src/trigger_vision
-      - ros_ws:/home/sntarg/ros_ws
+      # - ros_ws:/home/sntarg/ros_ws
       - bashhistory:/bashhistory
       - /dev/:/dev/
     device_cgroup_rules:
@@ -40,5 +40,5 @@ services:
           devices:
             - capabilities: [ gpu ]
 volumes:
-  ros_ws:
+  # ros_ws:
   bashhistory:
