@@ -6,9 +6,10 @@ import argparse
 parser = argparse.ArgumentParser(description='YOLOv8 train CLI script')
 parser.add_argument('--net_size', type=str, choices=['m', 's', 'n'], default='n', help="Network size option")
 parser.add_argument('--input_size', type=int, default=416, help="Input image size (integer)")
-parser.add_argument('--workers', type=int, default=4, help="Input image size (integer)")
-parser.add_argument('--batch_size', type=int, default=32, help="Input image size (integer)")
-parser.add_argument('--device', type=int, default=0, help="Input image size (integer)")
+parser.add_argument('--workers', type=int, default=4, help="Num workers (cpu threads)")
+parser.add_argument('--batch_size', type=int, default=32, help="Batch size")
+parser.add_argument('--lr0', type=float, default=1e-3, help="Init learning rate")
+parser.add_argument('--device', type=int, default=0, help="ID CUDA device")
 
 args = parser.parse_args()
 
@@ -52,7 +53,7 @@ hyper_params = {
     "amp": True, # Automatic Mixed Precision (AMP) training, choices=[True, False], True runs AMP check
     "fraction": 1.0, # dataset fraction to train on (default is 1.0, all images in train set)
     "profile": False, # profile ONNX and TensorRT speeds during training for loggers
-    "lr0": 0.003, # initial learning rate (i.e. SGD=1E-2, Adam=1E-3)
+    "lr0": args.lr0, # initial learning rate (i.e. SGD=1E-2, Adam=1E-3)
     "lrf": 0.01, # final learning rate (lr0 * lrf)
     "momentum": 0.9, # SGD momentum/Adam beta1
     "weight_decay": 0.0005, # optimizer weight decay 5e-4
