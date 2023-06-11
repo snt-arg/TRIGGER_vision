@@ -15,7 +15,7 @@ parser.add_argument('--batch_size', type=int, default=32, help="Batch size")
 parser.add_argument('--patience', type=int, default=10, help="Patience before early stopping")
 parser.add_argument('--optimizer', type=str, default='AdamW', choices=['SGD', 'Adam', 'Adamax', 'AdamW', 'NAdam', 'RAdam', 'RMSProp', 'auto'], help="Optimize Algorithm")
 parser.add_argument('--lr0', type=float, default=3e-3, help="Init learning rate")
-parser.add_argument('--lr_decay', type=float, default=5e-4, help="Learning rate constant decay rate")
+parser.add_argument('--lr_decay', type=float, default=5e-3, help="Learning rate constant decay rate")
 parser.add_argument('--warmup_epochs', type=float, default=5., help="Warmup epochs number (fraction ok)")
 parser.add_argument('--device', type=int, default=0, help="ID CUDA device")
 parser.add_argument('--api_key', type=str, default=argparse.SUPPRESS, help="COMETML API Key (personal use)")
@@ -31,7 +31,7 @@ if hasattr(args, 'imgsz'):
   try:
     experiment = Experiment(
       api_key = args.api_key,
-      project_name = f"{model_name}_{input_size}_{Path(args.dataset).stem}_segm_trash",
+      project_name = f"YOLOV8{net_size}-segm-{input_size}_bottle-person",
       workspace="claudiocimarelli",
       auto_output_logging='default',
     )
@@ -85,14 +85,14 @@ hyper_params = {
     # "hsv_h: 0.015 # image HSV-Hue augmentation (fraction)
     # "hsv_s: 0.7 # image HSV-Saturation augmentation (fraction)
     # "hsv_v: 0.4 # image HSV-Value augmentation (fraction)
-    "degrees": 5, # image rotation (+/- deg)
+    "degrees": 90, # image rotation (+/- deg)
     "translate": 0.1, # image translation (+/- fraction)
     "scale": 0.5, # image scale (+/- gain)
     "shear": 0.01, # image shear (+/- deg)
     # "perspective": 0.00001, # image perspective (+/- fraction), range 0-0.001
     "flipud": 0.5, # image flip up-down (probability)
     "fliplr": 0.5, # image flip left-right (probability)
-    "mosaic": .1 # image mosaic (probability)
+    "mosaic": .01 # image mosaic (probability)
     # "mixup: 0.0 # image mixup (probability)
     # "copy_paste: 0.0 # segment copy-paste (probability)
 }
@@ -102,10 +102,7 @@ if experiment is not None:
 
 # Load a model
 model = YOLO(f'{model_name}.pt')  # load a pretrained model
-
 model.train(**hyper_params)
-# Evaluate the model's performance on the validation set
-results = model.val()
 
 # Seamlessly log your Pytorch model
 # log_model(experiment, model.model, model_name="YoloV8")

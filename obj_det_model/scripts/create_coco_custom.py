@@ -58,6 +58,10 @@ def process_folder(source_folder, target_folder):
                 target_label_path = os.path.join(target_label_folder, label_file)
                 process_image(source_image_path, source_label_path, target_image_path, target_label_path)
 
+        with open(os.path.join(target_folder, split_folder + '.txt'), 'w') as target_file:
+            lines = [f'./images/{split_folder}/{f}\n' for f in os.listdir(target_image_folder)]
+            target_file.writelines(lines)
+
 def main():
 # Main script
     source_folder = os.path.join(os.path.dirname(script_directory), 'datasets', 'coco')
