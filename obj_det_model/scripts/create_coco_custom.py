@@ -6,9 +6,6 @@ script_path = os.path.abspath(__file__)
 script_directory = os.path.dirname(script_path)
 
 def process_image(image_path, label_path, target_image_path, target_label_path):
-    if os.path.exists(target_image_path) and os.path.exists(target_label_path):
-        return
-
     lines = []
     with open(label_path, 'r') as label_file:
         lines = label_file.readlines()
@@ -21,16 +18,18 @@ def process_image(image_path, label_path, target_image_path, target_label_path):
     for line in lines:
         fields = line.split(' ')
         object_id = int(fields[0])
-        if object_id == 0 or object_id == 39:
-            if object_id == 39:
-                fields[0] = '1'  # Change object ID from 39 to 1
+        try:
+            fields[0] = str([0, 39, 40, 41, 45, 47, 75].index(object_id))
             filtered_lines.append(' '.join(fields))
+        except ValueError:
+            continue
 
     if len(filtered_lines)==0:
         return
 
     # Copy image file
-    shutil.copyfile(image_path, target_image_path)
+    if not os.path.exists(target_image_path):
+        shutil.copyfile(image_path, target_image_path)
 
     # Save modified label file
     with open(target_label_path, 'w') as target_label_file:
